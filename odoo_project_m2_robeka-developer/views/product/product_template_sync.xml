@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="product_template_inherit_form" model="ir.ui.view">
+            <field name="name">product.form.inherit.magento</field>
+            <field name="model">product.template</field>
+            <!--<field name="priority" eval="50"/>-->
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']" position="after">
+                    <div>
+                        <field name="on_magento"/>
+                        <field name="magento_ok" invisible="1"/>
+                        <label for="on_magento"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="product_template_only_inherit_form" model="ir.ui.view">
+            <field name="name">product.form.inherit.only.magento</field>
+            <field name="model">product.template</field>
+            <!--<field name="priority" eval="50"/>-->
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="magento_attr_set"
+                           attrs="{'invisible': [('on_magento', '!=', True)],'required': [('on_magento', '=', True)]}"
+                           options="{'no_create': True, 'no_edit': True}"/>
+                </xpath>
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="attrs">{'required': [('on_magento', '=', True)],'readonly': [('on_magento', '=',
+                        True),('id','!=',False),('magento_ok','=',True)]}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

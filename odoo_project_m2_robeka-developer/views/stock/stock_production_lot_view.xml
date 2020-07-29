@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_production_lot_form_inherit" model="ir.ui.view">
+            <field name="name">view_production_lot_form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='ref']" position="after">
+                    <!-- Add your fields or attributes here -->
+                    <field name="network"/>
+                    <field name="wakeup_number"/>
+                    <field name="camera_password"/>
+                    <field name="imei"/>
+                    <field name="tutk"/>
+                    <field name="msisdn"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="view_production_lot_form_simple_inherit" model="ir.ui.view">
+            <field name="name">view_production_lot_form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form_simple"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='ref']" position="after">
+                    <!-- Add your fields or attributes here -->
+                    <field name="network"/>
+                    <field name="wakeup_number"/>
+                    <field name="camera_password"/>
+                    <field name="imei"/>
+                    <field name="tutk"/>
+                    <field name="msisdn"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>
