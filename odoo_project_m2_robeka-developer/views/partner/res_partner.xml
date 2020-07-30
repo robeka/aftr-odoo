@@ -8,17 +8,29 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
 
-<!--                <xpath expr="//field[@name='vat']" position="after">-->
-<!--                    &lt;!&ndash; Add your fields or attributes here &ndash;&gt;-->
-<!--                    <field name="id_magento_company"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='vat']" position="after">-->
+                <!--                    &lt;!&ndash; Add your fields or attributes here &ndash;&gt;-->
+                <!--                    <field name="id_magento_company"/>-->
+                <!--                </xpath>-->
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <button name="sync_data_partner_company_manual" type="object" string="Sync Contact To Magento" class="oe_highlight"/>
+                    </header>
+                </xpath>
                 <xpath expr="//field[@name='email']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
 
             </field>
         </record>
-
-
+        <record id="sync_repartner_to_magento" model="ir.actions.server">
+            <field name="name">Sync Contact to Magento</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">
+                records.sync_data_partner_company_manual()
+            </field>
+        </record>
     </data>
 </odoo>

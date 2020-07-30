@@ -21,7 +21,7 @@ class ResPartner(models.Model):
         for rec in self:
             if rec.is_company:
                 self.sync_data_partner_company(rec)
-            elif rec.parent_id:
+            elif rec.parent_id and rec.parent_id.is_company:
                 self.sync_data_partner_company(rec.parent_id)
         return res
 
@@ -86,6 +86,69 @@ class ResPartner(models.Model):
                     client.post(url, arguments=final_params)
                 except Exception as e:
                     print(e)
+
+    def sync_data_partner_company_manual(self):
+        for rec in self:
+            if rec.is_company:
+                magento_backend = request.env['magento.backend'].search([], limit=1)
+                client = Client(magento_backend.web_url, magento_backend.access_token, True)
+                child_ids = []
+                if rec.child_ids:
+                    for child in rec.child_ids:
+                        data_customer = {
+                            'name': child.name,
+                            'is_company': child.is_company,
+                            'function': child.function,  # Job position
+                            'title': child.title.name if child.title else False,  # Danh xưng, Miss, Mr, Doctor, Professor
+                            'street': child.street,
+                            'streets': child.street2,
+                            'city': child.city,
+                            'state': child.state_id.name if child.state_id else False,
+                            'zip': child.zip,
+                            'country_id': child.country_id.code if child.country_id else False,
+                            'vat': child.vat,  # Tax of company/customer
+                            'phone': child.phone,
+                            'mobile': child.mobile,
+                            'email': child.email,
+                            'website': child.website,
+                            'lang': child.lang,
+                            'comment': child.comment,
+                            'customer': child.customer,
+                            'supplier': child.supplier,
+                            'type': child.type  # contact,invoice,delivery,orther,private
+                        }
+                        child_ids.append(data_customer)
+
+                params = {
+                    'odoo_id': rec.id,
+                    'name': rec.name,
+                    'is_company': rec.is_company,
+                    'street': rec.street,
+                    'streets': rec.street2,
+                    'city': rec.city,
+                    'state': rec.state_id.name if rec.state_id else False,
+                    'zip': rec.zip,
+                    'country_id': rec.country_id.code if rec.country_id else False,
+                    'vat': rec.vat,  # Tax of company
+                    'phone': rec.phone,
+                    'mobile': rec.mobile,
+                    'email': rec.email,
+                    'website': rec.website,
+                    'lang': rec.lang,
+                    'comment': rec.comment,
+                    'customer': rec.customer,
+                    'supplier': rec.supplier,
+                    'child_ids': child_ids,
+                }
+                final_params = {}
+                final_params['data'] = params
+                if final_params:
+                    try:
+                        url = 'rest/V1/company/upset'
+                        # print('trigger return')
+                        client.post(url, arguments=final_params)
+                    except Exception as e:
+                        print(e)
 
     # id_magento_company = fields.Integer(string='Magento Company ID')
 
