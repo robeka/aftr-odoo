@@ -2,6 +2,8 @@ from odoo import models, api, fields
 from odoo.http import request
 from ...utils.magento.rest import Client
 
+sync_from_magento = False
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -9,20 +11,22 @@ class ResPartner(models.Model):
     @api.model
     def create(self, vals):
         res = super(ResPartner, self).create(vals)
-        if res.is_company:
-            self.sync_data_partner_company(res)
-        elif res.parent_id:
-            self.sync_data_partner_company(res.parent_id)
+        if not vals.get("sync_from"):
+            if res.is_company:
+                self.sync_data_partner_company(res)
+            elif res.parent_id:
+                self.sync_data_partner_company(res.parent_id)
         return res
 
     @api.multi
     def write(self, vals):
         res = super(ResPartner, self).write(vals)
-        for rec in self:
-            if rec.is_company:
-                self.sync_data_partner_company(rec)
-            elif rec.parent_id and rec.parent_id.is_company:
-                self.sync_data_partner_company(rec.parent_id)
+        if len(vals) > 0:
+            for rec in self:
+                if rec.is_company:
+                    self.sync_data_partner_company(rec)
+                elif rec.parent_id and rec.parent_id.is_company:
+                    self.sync_data_partner_company(rec.parent_id)
         return res
 
     def sync_data_partner_company(self, company):
