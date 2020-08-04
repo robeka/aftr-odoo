@@ -40,7 +40,7 @@ class StockPicking(models.Model):
                                     'serial_id': str(s.lot_id.id),
                                     'serial': s.lot_id.name,
                                     'sku': e.product_id.default_code,
-                                    'ref': e.lot_id.ref if s.lot_id.ref else "",
+                                    'ref': s.lot_id.ref if s.lot_id.ref else False,
                                     'network': str(s.lot_id.network) if s.lot_id and s.lot_id.network else False,
                                     'wakeup_number': str(s.lot_id.wakeup_number) if s.lot_id and s.lot_id.wakeup_number else False,
                                     'camera_password': str(s.lot_id.camera_password) if s.lot_id and s.lot_id.camera_password else False,
